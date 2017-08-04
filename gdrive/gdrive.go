@@ -1007,6 +1007,8 @@ func (gd *GDrive) GetFileContents(f *File) (io.ReadCloser, error) {
 		if err != nil {
 			return nil, err
 		}
+        request.Header.Set("Range", "bytes=0-499")
+        fmt.Println("ddd")
 
 		resp, err := gd.client.Do(request)
 
