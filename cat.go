@@ -46,7 +46,7 @@ func cat(args []string) int {
 			continue
 		}
 
-		contentsReader, err := gd.GetFileContents(file)
+		contentsReader, err := gd.GetFileContents(file, -1, 0)
 		if err != nil {
 			if contentsReader != nil {
 				contentsReader.Close()

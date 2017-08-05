@@ -30,7 +30,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/google/skicka/gdrive"
+	"./gdrive"
 	"golang.org/x/crypto/pbkdf2"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
@@ -709,7 +709,7 @@ func openURL(url string) error {
 
 // Create an empty configuration file for the user to use as a starting-point.
 func createConfigFile(filename string) {
-	contents := `; Default .skicka.config file. See 
+	contents := `; Default .skicka.config file. See
 ; https://github.com/google/skicka/blob/master/README.md for more
 ; information about setting up skicka.
 [google]

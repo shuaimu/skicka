@@ -21,11 +21,12 @@ package main
 
 import (
 	"bytes"
+    "strconv"
 	"crypto/aes"
 	"encoding/hex"
 	"fmt"
 	"github.com/cheggaaa/pb"
-	"github.com/google/skicka/gdrive"
+	"./gdrive"
 	"io"
 	"os"
 	"path"
@@ -41,11 +42,15 @@ func downloadUsage() {
 	fmt.Printf("Run \"skicka help\" for more detailed help text.\n")
 }
 
+var offset_g int
+var size_g int
+
 func download(args []string) int {
 	var drivePath, localPath string
 	ignoreTimes := false
 	downloadGoogleAppsFiles := false
 	dryRun := false
+    offset_g = -1;
 	for i := 0; i < len(args); i++ {
 		if args[i] == "-ignore-times" {
 			ignoreTimes = true
@@ -53,6 +58,12 @@ func download(args []string) int {
 			downloadGoogleAppsFiles = true
 		} else if args[i] == "-dry-run" {
 			dryRun = true
+		} else if args[i] == "-offset" {
+            i++
+            offset_g, _ = strconv.Atoi(args[i])
+		} else if args[i] == "-size" {
+            i++;
+            size_g, _ = strconv.Atoi(args[i])
 		} else if drivePath == "" {
 			drivePath = filepath.Clean(args[i])
 		} else if localPath == "" {
@@ -547,7 +558,7 @@ func fileNeedsDownload(localPath string, driveFile *gdrive.File,
 
 // Sync the given file from Google Drive to the local filesystem.
 func downloadDriveFile(writer io.Writer, driveFile *gdrive.File) error {
-	contentsReader, err := gd.GetFileContents(driveFile)
+	contentsReader, err := gd.GetFileContents(driveFile, offset_g, size_g)
 	if contentsReader != nil {
 		defer contentsReader.Close()
 	}

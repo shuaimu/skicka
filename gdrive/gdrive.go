@@ -967,7 +967,7 @@ func (gd *GDrive) getFolderContentsRecursive(parentFolder *File, files *[]*File)
 
 // GetFileContents returns an io.ReadCloser that provides the contents of
 // the given File.
-func (gd *GDrive) GetFileContents(f *File) (io.ReadCloser, error) {
+func (gd *GDrive) GetFileContents(f *File, offset int, size int) (io.ReadCloser, error) {
 	// The file download URL expires some hours after it's retrieved, so we
 	// can't really cache it.  Re-grab the full *drive.File right before
 	// downloading it so that we have a fresh URL.
@@ -1007,8 +1007,11 @@ func (gd *GDrive) GetFileContents(f *File) (io.ReadCloser, error) {
 		if err != nil {
 			return nil, err
 		}
-        request.Header.Set("Range", "bytes=0-499")
-        fmt.Println("ddd")
+        if (offset >= 0) {
+            var x = fmt.Sprintf("bytes=%d-%d", offset, offset + size - 1)
+            fmt.Println(x)
+            request.Header.Set("Range", x)
+        }
 
 		resp, err := gd.client.Do(request)
 
